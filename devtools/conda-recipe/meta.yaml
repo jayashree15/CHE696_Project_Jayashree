@@ -1,0 +1,27 @@
+package:
+  name: python_696_project
+  version: "0.0.0"
+
+source:
+  path: ../..
+
+build:
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools
+
+  run:
+    - python
+
+test:
+  requires:
+    - pytest
+  imports:
+    - python_696_project
+
+about:
+  home: add_url_here
+  license: MIT License
