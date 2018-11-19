@@ -7,8 +7,6 @@ Performing analysis on Parkinsons data
 # Safe to remove with Python 3-only code
 from __future__ import absolute_import
 
-# Add imports here
-from .data_proc import *
 
 # Handle versioneer
 from ._version import get_versions

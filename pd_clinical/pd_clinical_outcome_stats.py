@@ -3,7 +3,10 @@
 
 """
 pd_clinical_outcome_stats.py
-Preliminary data analysis from csv
+Using the before and after treatment motor scores of Parkison's patients,
+this script calculates the motor improvement score and percentage STN activation.
+It also performs Wilcoxon signed rank test based on the improvement score and
+creates a scatter plot of improvement score and percentage STN activation
 
 Handles the primary functions
 """
@@ -92,7 +95,7 @@ def compute_stn_activation(lstn_df, dvstn_df, rstn_df):
     :param: lstn_df: excel sheet containing the motor scores for left side
     :param: rstn_df: excel sheet containing the motor scores for right side
     :param: dvstn_df: excel sheet containing info to calculate % STN activation
-    :return: a png image of improvement score and % STN activation for both sides
+    :return: wilcoxon score and scatter plot of improvement score and % STN activation for both sides
     """
 
     lstn_improvement_volt = process_lstn_activation(lstn_df)
@@ -100,7 +103,6 @@ def compute_stn_activation(lstn_df, dvstn_df, rstn_df):
 
     lstn_percent_activation = process_stn_activation(dvstn_df, 'L')
     rstn_percent_activation = process_stn_activation(dvstn_df, 'R')
-
 
     # Performing Wilcoxon signed rank test
     p_value = perform_wilcoxon_rank_test(lstn_improvement_volt, rstn_improvement_volt)
@@ -116,7 +118,7 @@ def compute_stn_activation(lstn_df, dvstn_df, rstn_df):
     rdat = plt.scatter(rstn_percent_activation, rstn_improvement_volt)
     plt.title('Parkinsons Patient Data')
     plt.xlabel('STN percent activation (%)')
-    plt.ylabel('Motor improvement score normalized by voltage')
+    plt.ylabel('Voltage normalized motor improvement score')
     plt.legend((ldat, rdat), ('Left Side','Right_side'), loc='upper right')
     #plt.show()
     out_fig_name = 'co_relations.png'
@@ -128,7 +130,9 @@ def compute_stn_activation(lstn_df, dvstn_df, rstn_df):
 
 def process_lstn_activation(df):
     """
-
+    Calculates the score improvement normalized by voltage for each patient
+    :param:df: contains the two excel sheets 'LSTN', 'RSTN' as dictionaries
+    returns: improvement score normalized by voltage for both the sides in each patient
     """
     df = df.sort_values(['Patient'])
     patients = df['Patient']
@@ -143,22 +147,30 @@ def process_lstn_activation(df):
 
 def process_stn_activation(df, side):
 
+    """
+    Calculates STN activation percentage
+    :param df: dictionary containing STN volume and active STN volume for patients
+    :param side: side of the brain 'L' or 'R'
+    :return: STN activation percentage for each side for all patients
+    """
+
     #print(list(df))
     df = df.sort_values(['Patient'])
-    #dstn_vol = df['dSTN vol (' + side + ') [mm3]']
-    #vstn_vol = df['vSTN vol (' + side + ') [mm3]']
     left_stn_vol = df['STN vol (' + side + ') [mm3]']
-
-    #vta_inside_dstn = df['VTA inside dSTN (' + side + ') [mm3]']
-    #vta_inside_vstn = df['VTA inside vSTN (' + side + ') [mm3]']
     left_active_stn = df['VTA inside STN (' + side + ') [mm3]']
 
     stn_percent_activation = (left_active_stn/left_stn_vol)*100
     return stn_percent_activation
 
-def perform_wilcoxon_rank_test(x,y):
-    return scipy.stats.ranksums(x,y)
 
+def perform_wilcoxon_rank_test(x,y):
+    """
+    Performs wilcoxon rank test for two variables
+    :param x: Improvement score for left side
+    :param y: Improvement score for right side
+    :return: p_value from the wilcoxon signed rank test
+    """
+    return scipy.stats.ranksums(x,y)
 
 
 if __name__ == "__main__":
