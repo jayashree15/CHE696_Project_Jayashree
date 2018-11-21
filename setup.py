@@ -31,7 +31,7 @@ setup(
                                       ],
                   },     package_dir={'python_696_project': 'python_696_project'},
 
-    test_suite='tests',
+    test_suite='tests', install_requires=['matplotlib', 'scipy', 'pandas']
     # Additional entries you may want simply uncomment the lines you want and fill in the data
     # author_email='me@place.org',      # Author email
     # url='http://www.my_package.com',  # Website

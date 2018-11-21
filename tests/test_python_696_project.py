@@ -11,6 +11,7 @@ import unittest
 from contextlib import contextmanager
 from io import StringIO
 import logging
+import pandas as pd
 import pd_clinical.pd_clinical_outcome_stats as my_script
 
 logging.basicConfig(level=logging.DEBUG)
@@ -64,7 +65,7 @@ class TestMain(unittest.TestCase):
             silent_remove(DEF_PNG_OUT, disable=DISABLE_REMOVE)
 
 
-class TestMainFailWell(unittest.TestCase):
+class TestWrongFile(unittest.TestCase):
     """ Testing missing file exception and require input format """
 
     def testMissingFile(self):
@@ -108,6 +109,26 @@ class TestDataAnalysis(unittest.TestCase):
                 analysis_results = a.readlines()
                 self.assertEqual(expected_results, analysis_results)
 
+
+class TestOutput(unittest.TestCase):
+    def test_wilcox_output(self):
+        input_file = os.path.join(TEST_DATA_DIR, "test_excel2.xlsx")
+        test_input = ["-c", input_file]
+        my_script.main(test_input)
+        with open('wilcoxon_test_out.txt', 'r') as a:
+            analysis_results = a.readlines()
+            p_value = (analysis_results[1].split('=')[2])[:-1]
+            print(p_value)
+            self.assertLess(float(p_value), 1)
+
+
+class TestDataAnalysis(unittest.TestCase):
+    def test_func_return_type(self):
+        input_file = os.path.join(TEST_DATA_DIR, "test_excel2.xlsx")
+        excel = pd.ExcelFile(input_file)
+        returned_val = my_script.convert_sheets_to_df_dicts(excel)
+        print(type(returned_val))
+        self.assertTrue(isinstance(returned_val, dict))
 
 # Utility functions
 
