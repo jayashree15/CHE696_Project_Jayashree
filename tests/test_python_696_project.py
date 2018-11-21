@@ -12,7 +12,7 @@ from contextlib import contextmanager
 from io import StringIO
 import logging
 import pandas as pd
-import pd_clinical.pd_clinical_outcome_stats as my_script
+import python_696_project.pd_clinical.pd_clinical_outcome_stats as my_script
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
