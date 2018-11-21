@@ -11,7 +11,7 @@ import unittest
 from contextlib import contextmanager
 from io import StringIO
 import logging
-import pd_clinical.pd_clinical_outcome_stats as my_script
+import python_696_project.pd_clinical.pd_clinical_outcome_stats as my_script
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -56,9 +56,8 @@ class TestMain(unittest.TestCase):
             # checks that the expected message is sent to standard out
             with capture_stdout(my_script.main, test_input) as output:
                 self.assertTrue("co-relation_data.xlsx" in output)
-
-            self.assertTrue(os.path.isfile("wilcoxon_test_out.txt"))
-            self.assertTrue(os.path.isfile("co_relations.png"))
+                self.assertTrue(os.path.isfile("wilcoxon_test_out.txt"))
+                self.assertTrue(os.path.isfile("co_relations.png"))
         finally:
             silent_remove(DEF_XLSX_OUT, disable=DISABLE_REMOVE)
             silent_remove(DEF_PNG_OUT, disable=DISABLE_REMOVE)
